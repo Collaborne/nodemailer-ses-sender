@@ -1,0 +1,35 @@
+{
+	"name": "@collaborne/nodemailer-ses-sender",
+	"version": "0.0.1",
+	"description": "Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)",
+	"main": "index.js",
+	"scripts": {
+		"prepublish": "eslint src sample test",
+		"start": "node ${_NODE_ARGS} src/index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Collaborne/nodemailer-ses-sender.git"
+	},
+	"keywords": [
+		"nodemailer",
+		"ses",
+		"aws",
+		"email"
+	],
+	"author": "Claudia Minardi <claudia.minardi@collaborne.com> (Collaborne)",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/Collaborne/nodemailer-ses-sender/issues"
+	},
+	"homepage": "https://github.com/Collaborne/nodemailer-ses-sender#readme",
+	"dependencies": {
+		"aws-sdk": "^2.162.0",
+		"nodemailer": "^4.4.0"
+	},
+	"devDependencies": {
+		"eslint": "^4.12.1",
+		"eslint-config-collaborne": "^1.1.1"
+	}
+}
