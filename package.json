@@ -26,10 +26,13 @@
 	"homepage": "https://github.com/Collaborne/nodemailer-ses-sender#readme",
 	"dependencies": {
 		"aws-sdk": "^2.162.0",
+		"log4js": "^2.3.12",
 		"nodemailer": "^4.4.0"
 	},
 	"devDependencies": {
 		"eslint": "^4.12.1",
-		"eslint-config-collaborne": "^1.1.1"
+		"eslint-config-collaborne": "^1.1.1",
+		"smtp-server": "^3.4.1",
+		"yargs": "^10.0.3"
 	}
 }
