@@ -2,50 +2,76 @@
 
 const nodemailer = require('nodemailer');
 const AWS = require('aws-sdk');
+const logger = require('log4js').getLogger('SESEmailSender');
+
+const DEFAULT_SMTP_PORT = '587';
+const DEFAULT_SMTP_HOST = '127.0.0.1';
 
 function getSESConfig() {
+	return { SES: new AWS.SES({ apiVersion: '2010-12-01' }) };
+}
+
+function getDefaultSMTPConfig(smtpHost, smtpPort) {
+	logger.info(`Configured SMTP on ${smtpHost}:${smtpPort} for dry-run`);
 	return {
-		SES: new AWS.SES({ apiVersion: '2010-12-01' }),
-		sendingRate: 1
+		host: smtpHost,
+		port: smtpPort,
+		secure: false,
+		tls: {
+			// Do not fail on invalid certs
+			rejectUnauthorized: false
+		}
 	};
 }
 
-function doSendEmail({ from, headers, html, subject, receiver, transporter}) {
+/**
+ * Resolve a promise after the `timeout` has passed.
+ *
+ * @param {Number} after timeout in milliseconds
+ * @return {Promise<void>} promise resolved after timeout
+ */
+function delay(after) {
+	return new Promise(resolve => {
+		return setTimeout(() => {
+			return resolve();
+		}, after);
+	});
+}
+
+function doSendEmail({ from, headers, html, subject, to, transporter }) {
+	const errorRetryDelay = 30000;
 	const mailOptions = {
 		from,
 		headers,
 		html,
 		subject,
-		to: receiver
+		to
 	};
 
-	transporter.sendMail(mailOptions, function onSent(error, info) {
-		if (error) {
-			throw new Error(`Could not send email through SES: ${error.message}`);
-		} else {
-			return info;
-		}
-	});
+	return transporter.sendMail(mailOptions)
+		.catch(error => {
+			if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
+				logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
+				return delay(errorRetryDelay).then(doSendEmail({ from, headers, html, subject, to, transporter }));
+			}
+			throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
+		});
 }
 
-function sendEmails({ from, headers, html, text, subject, receivers, transporter }) {
-	return receivers.map(receiver => doSendEmail({
-		from, headers, html, subject, receiver, transporter
-	}));
-}
+module.exports = class SESEmailSender {
+	constructor(isDryRun = false, { smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT }) {
+		const config = isDryRun ? getDefaultSMTPConfig(smtpHost, smtpPort) : getSESConfig();
+		this.transporter = nodemailer.createTransport(config);
+	}
 
-module.exports = function createSendEmails() {
-	const transporter = nodemailer.createTransport(getSESConfig());
-
-	return function sendEmail({ from, headers, html, text, subject, receivers }) {
-		return sendEmails({
+	sendEmail({ from, headers = null, html, subject, to }) {
+		return doSendEmail({
 			from,
 			headers,
 			html,
-			text,
 			subject,
-			receivers,
-			transporter
+			to,
+			transporter: this.transporter
 		});
 	};
-};
+}
