@@ -1,6 +1,6 @@
 {
 	"name": "@collaborne/nodemailer-ses-sender",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)",
 	"main": "index.js",
 	"scripts": {
