@@ -1,5 +1,5 @@
 {
-	"name": "@collaborne/nodemailer-ses-sender",
+	"name": "nodemailer-ses-sender",
 	"version": "0.2.0",
 	"description": "Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)",
 	"main": "index.js",
