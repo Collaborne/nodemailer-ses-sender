@@ -1,4 +1,4 @@
-# nodemailer-ses-sender [![Build Status](https://travis-ci.org/Collaborne/nodemailer-ses-sender.svg?branch=master)](https://travis-ci.org/Collaborne/nodemailer-ses-sender)
+# nodemailer-ses-sender [![Build Status](https://travis-ci.org/Collaborne/nodemailer-ses-sender.svg?branch=master)](https://travis-ci.org/Collaborne/nodemailer-ses-sender) [![Greenkeeper badge](https://badges.greenkeeper.io/Collaborne/nodemailer-ses-sender.svg)](https://greenkeeper.io/)
 
 Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)
 
