@@ -85,8 +85,8 @@ module.exports = class SESEmailSender {
 
 	/**
 	 * SES tags must only contain alphanumeric ASCII characters, '_' and '-'
-	 * @param {string} tag Unescaped tag
 	 *
+	 * @param {string} tag Unescaped tag
 	 * @returns {string} escaped tag
 	 */
 	escapeSESTag(tag) {
