@@ -59,7 +59,9 @@ typings/
 .env
 
 # package-lock
+npm-shrinkwrap.json
 package-lock.json
+yarn.lock
 
 # vscode
 .vscode/
