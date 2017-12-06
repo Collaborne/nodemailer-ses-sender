@@ -38,26 +38,6 @@ function delay(after) {
 	});
 }
 
-function doSendEmail({ from, headers, html, subject, to, transporter }) {
-	const errorRetryDelay = 30000;
-	const mailOptions = {
-		from,
-		headers,
-		html,
-		subject,
-		to
-	};
-
-	return transporter.sendMail(mailOptions)
-		.catch(error => {
-			if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
-				logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
-				return delay(errorRetryDelay).then(doSendEmail({ from, headers, html, subject, to, transporter }));
-			}
-			throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
-		});
-}
-
 module.exports = class SESEmailSender {
 	constructor(isDryRun = false, { smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT }) {
 		const config = isDryRun ? getDefaultSMTPConfig(smtpHost, smtpPort) : getSESConfig();
@@ -65,13 +45,22 @@ module.exports = class SESEmailSender {
 	}
 
 	sendEmail({ from, headers = null, html, subject, to }) {
-		return doSendEmail({
+		const errorRetryDelay = 30000;
+		const mailOptions = {
 			from,
 			headers,
 			html,
 			subject,
-			to,
-			transporter: this.transporter
-		});
-	};
+			to
+		};
+	
+		return this.transporter.sendMail(mailOptions)
+			.catch(error => {
+				if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
+					logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
+					return delay(errorRetryDelay).then(this.sendEmail({ from, headers, html, subject, to }));
+				}
+				throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
+			});
+	}
 }
