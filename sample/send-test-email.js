@@ -25,4 +25,4 @@ emailSender.sendEmail({
 	})
 	.catch(error => {
 		console.error(error.stack);
-	})
+	});
