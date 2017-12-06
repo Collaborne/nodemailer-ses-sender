@@ -1,4 +1,5 @@
-# nodemailer-ses-sender
+# nodemailer-ses-sender [![Build Status](https://travis-ci.org/Collaborne/nodemailer-ses-sender.svg?branch=master)](https://travis-ci.org/Collaborne/nodemailer-ses-sender)
+
 Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)
 
 ## Usage
