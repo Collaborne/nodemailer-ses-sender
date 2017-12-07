@@ -11,8 +11,8 @@ const emailSender = new EmailsSender();
 
 emailSender.sendEmail({
 	from: 'mysender@test.com',
-	headers: {
-		'X-SES-MESSAGE-TAGS': 'myTag=test-email'
+	tags: {
+		'myTag': 'test-email'
 	},
 	html: 'This is the <b>content</b> of this test email',
 	subject: 'Test Nodemailer SES',
