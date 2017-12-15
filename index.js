@@ -39,14 +39,14 @@ function delay(after) {
 }
 
 module.exports = class SESEmailSender {
-	constructor(isDryRun = false, { smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT, configurationSet }) {
+	constructor(isDryRun = false, {smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT, configurationSet}) {
 		const config = isDryRun ? getDefaultSMTPConfig(smtpHost, smtpPort) : getSESConfig();
 		this.transporter = nodemailer.createTransport(config);
 
 		this.configurationSet = configurationSet;
 	}
 
-	sendEmail({ from, tags = {}, html, subject, to }) {
+	sendEmail({from, tags = {}, html, subject, to}) {
 		const errorRetryDelay = 30000;
 		const mailOptions = {
 			from,
@@ -55,12 +55,18 @@ module.exports = class SESEmailSender {
 			subject,
 			to
 		};
-	
+
 		return this.transporter.sendMail(mailOptions)
 			.catch(error => {
 				if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
 					logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
-					return delay(errorRetryDelay).then(this.sendEmail({ from, tags, html, subject, to }));
+					return delay(errorRetryDelay).then(this.sendEmail({
+						from,
+						html,
+						subject,
+						tags,
+						to
+					}));
 				}
 				throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
 			});
@@ -69,7 +75,8 @@ module.exports = class SESEmailSender {
 	/**
 	 * Creates the SES header
 	 *
-	 * @param {Object.<String, String>} tags 
+	 * @param {Object.<string, string>} tags Tags that should be added to the SES header
+	 * @returns {Object.<string, string} SES header
 	 */
 	createHeader(tags = {}) {
 		const messageTags = Object.keys(tags).map(tag => {
@@ -97,4 +104,4 @@ module.exports = class SESEmailSender {
 		// Replace all invalid characters
 		return tag.replace(/[^a-zA-Z0-9_-]/g, '_');
 	}
-}
+};
