@@ -8,7 +8,9 @@ const DEFAULT_SMTP_PORT = '587';
 const DEFAULT_SMTP_HOST = '127.0.0.1';
 
 function getSESConfig() {
-	return { SES: new AWS.SES({ apiVersion: '2010-12-01' }) };
+	return {
+		SES: new AWS.SES({apiVersion: '2010-12-01'})
+	};
 }
 
 function getDefaultSMTPConfig(smtpHost, smtpPort) {
