@@ -40,13 +40,17 @@ function delay(after) {
 
 module.exports = class SESEmailSender {
 	constructor(isDryRun = false, {smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT, configurationSet}) {
-		const config = isDryRun ? getDefaultSMTPConfig(smtpHost, smtpPort) : getSESConfig();
-		this.transporter = nodemailer.createTransport(config);
+		this.transporterSES = nodemailer.createTransport(getSESConfig());
+
+		const configDryRun = getDefaultSMTPConfig(smtpHost, smtpPort);
+		this.transporterDryRun = nodemailer.createTransport(configDryRun);
 
 		this.configurationSet = configurationSet;
+
+		this.defaulDryRun = isDryRun;
 	}
 
-	sendEmail({from, tags = {}, html, subject, to}) {
+	sendEmail({from, tags = {}, html, subject, to, isDryRun = this.defaulDryRun}) {
 		const errorRetryDelay = 30000;
 		const mailOptions = {
 			from,
@@ -56,7 +60,9 @@ module.exports = class SESEmailSender {
 			to
 		};
 
-		return this.transporter.sendMail(mailOptions)
+		const transporter = isDryRun ? this.transporterDryRun : this.transporterSES;
+
+		return transporter.sendMail(mailOptions)
 			.catch(error => {
 				if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
 					logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
