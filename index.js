@@ -6,10 +6,14 @@ const logger = require('log4js').getLogger('SESEmailSender');
 
 const DEFAULT_SMTP_PORT = '587';
 const DEFAULT_SMTP_HOST = '127.0.0.1';
+const DEFAULT_SES_REGION = 'us-east-1';
 
-function getSESConfig() {
+function getSESConfig(region) {
 	return {
-		SES: new AWS.SES({apiVersion: '2010-12-01'})
+		SES: new AWS.SES({
+			apiVersion: '2010-12-01',
+			region
+		})
 	};
 }
 
@@ -41,8 +45,8 @@ function delay(after) {
 }
 
 module.exports = class SESEmailSender {
-	constructor(isDryRun = false, {smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT, configurationSet}) {
-		this.transporterSES = nodemailer.createTransport(getSESConfig());
+	constructor(isDryRun = false, {smtpHost = DEFAULT_SMTP_HOST, smtpPort = DEFAULT_SMTP_PORT, configurationSet, region = DEFAULT_SES_REGION}) {
+		this.transporterSES = nodemailer.createTransport(getSESConfig(region));
 
 		const configDryRun = getDefaultSMTPConfig(smtpHost, smtpPort);
 		this.transporterDryRun = nodemailer.createTransport(configDryRun);
