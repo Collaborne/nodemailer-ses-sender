@@ -84,7 +84,7 @@ module.exports = class SESEmailSender {
 	 * Creates the SES header
 	 *
 	 * @param {Object.<string, string>} tags Tags that should be added to the SES header
-	 * @returns {Object.<string, string} SES header
+	 * @returns {Object.<string, string>} SES header
 	 */
 	createHeader(tags = {}) {
 		const messageTags = Object.keys(tags).map(tag => {
