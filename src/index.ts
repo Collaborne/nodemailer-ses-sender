@@ -44,14 +44,14 @@ function delay(after: number): Promise<void> {
 	});
 }
 
-interface Options {
+export interface Options {
 	smtpHost?: string;
 	smtpPort?: number;
 	configurationSet?: string;
 	region: string;
 }
 
-interface SendOptions {
+export interface SendOptions {
 	from: string;
 	html: string;
 	subject: string;
