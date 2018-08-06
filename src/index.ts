@@ -38,9 +38,7 @@ function getDefaultSMTPConfig(smtpHost: string, smtpPort: number): SMTPOptions {
  */
 function delay(after: number): Promise<void> {
 	return new Promise(resolve => {
-		return setTimeout(() => {
-			return resolve();
-		}, after);
+		return setTimeout(() => resolve(), after);
 	});
 }
 
