@@ -1,21 +1,20 @@
-'use strict';
+import { expect } from 'chai';
 
-const SESEmailSender = require('../index.js');
-const chai = require('chai');
-const expect = chai.expect;
+import { SESEmailSender } from '../src/index';
 
 describe('SESEmailSender', () => {
 	describe('SES header behavior', () => {
 		it('add multiple SES tags', () => {
-			const sender = new SESEmailSender(null, {
+			const sender = new SESEmailSender(true, {
 				configurationSet: 'configuration-set',
+				region: 'eu-west-1',
 			});
 			const header = sender.createHeader({});
 			expect(header['X-SES-CONFIGURATION-SET']).to.be.equal('configuration-set');
 		});
 
 		it('add multiple SES tags', () => {
-			const sender = new SESEmailSender(null, {});
+			const sender = new SESEmailSender(true, {region: 'eu-west-1'});
 			const header = sender.createHeader({
 				id: 'ID',
 				title: 'TITLE',
@@ -24,7 +23,7 @@ describe('SESEmailSender', () => {
 		});
 
 		it('encodes SES tags', () => {
-			const sender = new SESEmailSender(null, {});
+			const sender = new SESEmailSender(true, {region: 'eu-west-1'});
 			const header = sender.createHeader({
 				title: 'My Title',
 			});
