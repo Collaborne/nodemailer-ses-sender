@@ -1,21 +1,13 @@
-import AWS from 'aws-sdk';
 import { getLogger} from 'log4js';
 import nodemailer, { Transporter } from 'nodemailer';
 import { Options as SMTPOptions } from 'nodemailer/lib/smtp-transport';
+import { delay } from './delay';
+import { createHeader, getSESConfig } from './ses';
 
 const logger = getLogger('SESEmailSender');
 
 const DEFAULT_SMTP_PORT: number = 587;
 const DEFAULT_SMTP_HOST: string = '127.0.0.1';
-
-function getSESConfig(region: string) {
-	return {
-		SES: new AWS.SES({
-			apiVersion: '2010-12-01',
-			region,
-		}),
-	};
-}
 
 function getDefaultSMTPConfig(smtpHost: string, smtpPort: number): SMTPOptions {
 	logger.info(`Configured SMTP on ${smtpHost}:${smtpPort} for dry-run`);
@@ -28,18 +20,6 @@ function getDefaultSMTPConfig(smtpHost: string, smtpPort: number): SMTPOptions {
 			rejectUnauthorized: false,
 		},
 	};
-}
-
-/**
- * Resolve a promise after the `timeout` has passed.
- *
- * @param after timeout in milliseconds
- * @return promise resolved after timeout
- */
-function delay(after: number): Promise<void> {
-	return new Promise(resolve => {
-		return setTimeout(() => resolve(), after);
-	});
 }
 
 export interface Options {
@@ -81,7 +61,7 @@ export class SESEmailSender {
 		const errorRetryDelay = 30000;
 		const mailOptions = {
 			from: options.from,
-			headers: this.createHeader(options.tags || {}),
+			headers: createHeader(options.tags || {}, this.configurationSet),
 			html: options.html,
 			subject: options.subject,
 			to: options.to,
@@ -99,44 +79,5 @@ export class SESEmailSender {
 				}
 				throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
 			});
-	}
-
-	/**
-	 * Creates the SES header
-	 *
-	 * @VisibleForTesting
-	 * @param tags Tags that should be added to the SES header
-	 * @returns SES header
-	 */
-	public createHeader(tags: { [key: string]: string } = {}): { [key: string]: string } {
-		const messageTags = Object.keys(tags).map(tag => {
-			const value = tags[tag];
-			return `${tag}=${this.escapeSESTag(value)}`;
-		}).join(', ');
-
-		const header: { [key: string]: string } = {
-			'X-SES-MESSAGE-TAGS': messageTags,
-		};
-
-		if (this.configurationSet) {
-			header['X-SES-CONFIGURATION-SET'] = this.configurationSet;
-		}
-
-		return header;
-	}
-
-	/**
-	 * SES tags must only contain alphanumeric ASCII characters, '_' and '-'
-	 *
-	 * @param tag Unescaped tag
-	 * @returns escaped tag
-	 */
-	private escapeSESTag(tag: string): string {
-		if (!tag) {
-			return tag;
-		}
-
-		// Replace all invalid characters
-		return tag.replace(/[^a-zA-Z0-9_-]/g, '_');
 	}
 }
