@@ -1,6 +1,6 @@
 {
 	"name": "nodemailer-ses-sender",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
