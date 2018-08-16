@@ -30,5 +30,5 @@ describe('ses utils', () => {
 			const config = getSESConfig();
 			expect(config.SES).to.be.ok;
 		});
-	})
+	});
 });
