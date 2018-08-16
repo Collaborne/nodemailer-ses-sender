@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { createHeader } from '../src/ses';
+import { createHeader, getSESConfig } from '../src/ses';
 
 describe('ses utils', () => {
 	describe('createHeader()', () => {
@@ -24,4 +24,11 @@ describe('ses utils', () => {
 			expect(header['X-SES-MESSAGE-TAGS']).to.be.equal('title=My_Title');
 		});
 	});
+
+	describe('getSESConfig', () => {
+		it('returns a valid result without a region specified', () => {
+			const config = getSESConfig();
+			expect(config.SES).to.be.ok;
+		});
+	})
 });

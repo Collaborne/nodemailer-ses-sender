@@ -26,7 +26,7 @@ export interface Options {
 	smtpHost?: string;
 	smtpPort?: number;
 	configurationSet?: string;
-	region: string;
+	region?: string;
 }
 
 export interface SendOptions {

@@ -4,7 +4,7 @@ export interface Tags {
 	[key: string]: string;
 }
 
-export function getSESConfig(region: string) {
+export function getSESConfig(region?: string) {
 	return {
 		SES: new AWS.SES({
 			apiVersion: '2010-12-01',
