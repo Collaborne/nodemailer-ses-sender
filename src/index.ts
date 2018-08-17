@@ -1,4 +1,4 @@
-import { getLogger} from 'log4js';
+import { getLogger } from '@log4js-node/log4js-api';
 import nodemailer, { Transporter } from 'nodemailer';
 import { Options as SMTPOptions } from 'nodemailer/lib/smtp-transport';
 import { delay } from './delay';
