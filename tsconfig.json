@@ -3,7 +3,7 @@
 	"extends": "./node_modules/@collaborne/tsconfig/tsconfig",
 	"compilerOptions": {
 		"declaration": true,
-		"outDir": "./dist",
+		"outDir": "./dist"
 	},
 	"include": [
 		"./src/**/*"
