@@ -29,8 +29,7 @@
 	"dependencies": {
 		"@log4js-node/log4js-api": "^1.0.2",
 		"aws-sdk": "^2.162.0",
-		"nodemailer": "^4.4.0",
-		"typescript": "^2.9.2"
+		"nodemailer": "^4.4.0"
 	},
 	"devDependencies": {
 		"@collaborne/tsconfig": "^0.0.2",
@@ -44,6 +43,7 @@
 		"ts-node": "^7.0.0",
 		"tslint": "^5.11.0",
 		"tslint-config-collaborne": "^0.0.2",
+		"typescript": "^2.9.2",
 		"yargs": "^10.0.3"
 	}
 }
