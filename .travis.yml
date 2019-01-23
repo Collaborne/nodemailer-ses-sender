@@ -6,7 +6,6 @@ cache:
   directories:
   - node_modules
 before_install:
-- npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
 - if [ -d node_modules ] && [ x$(cat node_modules/.last-node-version 2>/dev/null) != x$(node -e 'console.log(process.version)') ]; then npm rebuild --update-binary && node -e 'console.log(process.version)' > node_modules/.last-node-version; fi
 deploy:
   provider: npm
@@ -17,6 +16,3 @@ deploy:
     tags: true
     condition: $(node -e 'console.log("v" + require("./package.json").version)') = ${TRAVIS_TAG}
   skip_cleanup: true
-env:
-  global:
-  - secure: "Oa5qs5nWpfhTmGzKmF+sOk5IYHUw4ZOsb0PekqExTMijV7yf7vtjhVbLXEp5UqEQFwLjdnZIwerizc28tD0qzEPZXjKPo0cNQOpPapUW161rWXvHVZvG6KN2hkbyNbMuc8rzxMPKZJxikgZjSQJ+74Kz41qRXpzuMi7caJupHkt1hSnxV3YDHcLe/HZxAKDWtr/cqGgmdR3xXS2eJDlnoMuygDV5fGdEhPkn04ooRc+EBV+yakPoXtpb8dkoXNayqtSxuYR2fCbCMUF8IIZyCzqCMjCbC4xwXCEOoJ6Z1FshhM0tMhakTX21OE+iwlR9k/1oFnI/t8ldXO9IPAnefyGDxyeaYojiplwM4Zd2bjop1p3d0QEWP9244kRfHfMsERp+7KcWw2WYEjGyAkbCPXPMQx3Lk0+X5cCiwmEeaTTAsSej+g9qvWDl/JZPwmyFQZtGBqxMx+yRtmL2PGI3kQLc+qpuUL+zTnn2NdJvEXqoMMEDl6BCHqo51rscHywbUL9NZHYp5k9e85tSTYBog1dCGMC82YQqwDWSLt+Zk+lcu5+oehyxFadjvd2y+C7wqtfIpVWMEYL8I73l5YC4L5c2PhMO84dcNI+fGyE+OVUOH4LwvTXm/Yd7pO3p5YXsgvFnIxZwmETw+7l9pXZ5hSkAuJBi2zKBxzhfPnNbn9c="
