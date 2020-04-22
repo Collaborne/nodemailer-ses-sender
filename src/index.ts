@@ -57,7 +57,7 @@ export class SESEmailSender {
 		this.defaultDryRun = isDryRun;
 	}
 
-	public sendEmail(options: SendOptions): Promise<any> {
+	public async sendEmail(options: SendOptions): Promise<any> {
 		const errorRetryDelay = 30000;
 		const mailOptions = {
 			from: options.from,
@@ -70,14 +70,15 @@ export class SESEmailSender {
 		const isDryRun = options.isDryRun || this.defaultDryRun;
 		const transporter = isDryRun ? this.transporterDryRun : this.transporterSES;
 
-		return transporter.sendMail(mailOptions)
-			.catch(error => {
-				if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
-					logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
-					return delay(errorRetryDelay)
-						.then(() => this.sendEmail(options));
-				}
-				throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
-			});
+		try {
+			return await transporter.sendMail(mailOptions)
+		} catch (error) {
+			if (error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded.') {
+				logger.error(`${error.code}: ${error.message}, retrying in ${errorRetryDelay / 1000}s`);
+				await delay(errorRetryDelay)
+				return this.sendEmail(options);
+			}
+			throw new Error(`Could not send email through SES: ${error.code}, ${error.message}`);
+		}
 	}
 }
