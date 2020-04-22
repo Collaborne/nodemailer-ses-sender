@@ -8,8 +8,7 @@
 	"scripts": {
 		"build": "tsc && tsc -p tsconfig.es6.json",
 		"lint": "tslint -c tslint.json \"src/**/*.ts\" \"test/**/*.ts\"",
-		"test": "TS_NODE_FILES=true node ${_NODE_ARGS} node_modules/.bin/_mocha --recursive -r ts-node/register \"test/**/*.ts\"",
-		"prepublish": "npm run lint && npm run build"
+		"test": "TS_NODE_FILES=true node ${_NODE_ARGS} node_modules/.bin/_mocha --recursive -r ts-node/register \"test/**/*.ts\""
 	},
 	"repository": {
 		"type": "git",
