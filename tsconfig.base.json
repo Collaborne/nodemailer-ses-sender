@@ -1,0 +1,9 @@
+{
+	"extends": "tsconfig-collaborne",
+	"compilerOptions": {
+		"declaration": true
+	},
+	"include": [
+		"src"
+	]
+}

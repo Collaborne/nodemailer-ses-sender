@@ -3,9 +3,10 @@
 	"version": "1.1.0",
 	"description": "Send emails through SES with Nodemailer (wrapper for the SES transport in Nodemailer)",
 	"main": "dist/index.js",
+	"module": "dist.es6/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc && tsc -p tsconfig.es6.json",
 		"lint": "tslint -c tslint.json \"src/**/*.ts\" \"test/**/*.ts\"",
 		"test": "TS_NODE_FILES=true node ${_NODE_ARGS} node_modules/.bin/_mocha --recursive -r ts-node/register \"test/**/*.ts\"",
 		"prepublish": "npm run lint && npm run build"
@@ -45,5 +46,12 @@
 		"tslint-config-collaborne": "^1.0.0",
 		"typescript": "^3.8.3",
 		"yargs": "^10.0.3"
-	}
+	},
+	"files": [
+		"src",
+		"tslint.json",
+		"tsconfig*.json",
+		"dist",
+		"dist.es6"
+	]
 }
