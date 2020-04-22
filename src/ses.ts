@@ -1,15 +1,18 @@
 import AWS from 'aws-sdk';
+import { ClientConfiguration } from 'aws-sdk/clients/ses';
 
 export interface Tags {
 	[key: string]: string;
 }
 
-export function getSESConfig(region?: string) {
+export function getSESConfig(region?: string, sesConfiguration?: ClientConfiguration) {
+	const configuration = {
+		apiVersion: '2010-12-01',
+		region,
+		...sesConfiguration,
+	}
 	return {
-		SES: new AWS.SES({
-			apiVersion: '2010-12-01',
-			region,
-		}),
+		SES: new AWS.SES(configuration),
 	};
 }
 

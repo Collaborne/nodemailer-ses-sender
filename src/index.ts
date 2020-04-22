@@ -1,6 +1,9 @@
-import { getLogger } from '@log4js-node/log4js-api';
+import { ClientConfiguration } from 'aws-sdk/clients/ses';
 import nodemailer, { Transporter } from 'nodemailer';
 import { Options as SMTPOptions } from 'nodemailer/lib/smtp-transport';
+
+import { getLogger } from '@log4js-node/log4js-api';
+
 import { delay } from './delay';
 import { createHeader, getSESConfig } from './ses';
 
@@ -27,6 +30,14 @@ export interface Options {
 	smtpPort?: number;
 	configurationSet?: string;
 	region?: string;
+
+	/**
+	 * Additional configuration options when creating the SES client
+	 *
+	 * Note that if both a `region` and a `sesConfiguration.region` are specified the region setting from
+	 * the `sesConfiguration` will be used.
+	 */
+	sesConfiguration?: ClientConfiguration;
 }
 
 export interface SendOptions {
@@ -45,7 +56,7 @@ export class SESEmailSender {
 	private defaultDryRun: boolean;
 
 	constructor(isDryRun = false, options: Options) {
-		this.transporterSES = nodemailer.createTransport(getSESConfig(options.region));
+		this.transporterSES = nodemailer.createTransport(getSESConfig(options.region, options.sesConfiguration));
 
 		const smtpHost = options.smtpHost || DEFAULT_SMTP_HOST;
 		const smtpPort = options.smtpPort || DEFAULT_SMTP_PORT;

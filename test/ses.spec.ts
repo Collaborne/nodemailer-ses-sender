@@ -1,4 +1,7 @@
 import { expect } from 'chai';
+import 'mocha';
+
+import { globalAgent } from 'http';
 
 import { createHeader, getSESConfig } from '../src/ses';
 
@@ -29,6 +32,20 @@ describe('ses utils', () => {
 		it('returns a valid result without a region specified', () => {
 			const config = getSESConfig();
 			expect(config.SES).to.be.ok;
+		});
+
+		it('applies the provided region and sesConfiguration', () => {
+			const config = getSESConfig('region', {endpoint: 'endpoint'});
+			expect(config.SES.config.region).to.be.equal('region');
+			expect(config.SES.config.endpoint).to.be.equal('endpoint');
+		});
+		it('applies the provided sesConfiguration after the default configuration', () => {
+			const config = getSESConfig('regionA', {region: 'regionB'});
+			expect(config.SES.config.region).to.be.equal('regionB');
+		});
+		it('applies the httpOptions from the provided sesConfiguration', () => {
+			const config = getSESConfig('region', {httpOptions: {agent: globalAgent}});
+			expect(config.SES.config.httpOptions!.agent).to.be.equal(globalAgent);
 		});
 	});
 });
