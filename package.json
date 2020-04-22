@@ -27,6 +27,7 @@
 	},
 	"homepage": "https://github.com/Collaborne/nodemailer-ses-sender#readme",
 	"dependencies": {
+		"@types/nodemailer": "^4.6.2",
 		"@log4js-node/log4js-api": "^1.0.2",
 		"aws-sdk": "^2.162.0",
 		"nodemailer": "^4.4.0"
@@ -35,7 +36,6 @@
 		"@types/chai": "^4.1.4",
 		"@types/mocha": "^5.2.5",
 		"@types/node": "^10.5.3",
-		"@types/nodemailer": "^4.6.2",
 		"chai": "*",
 		"mocha": "*",
 		"smtp-server": "^3.4.1",
